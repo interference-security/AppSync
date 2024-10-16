@@ -59,11 +59,15 @@ jobs:
       - name: Find generated .deb files
         id: find_deb
         run: |
-          deb_path=$(find . -type f -name 'ai.akemi.appsyncunified*_iphoneos-arm.deb' | head -n 1)
-          if [ -z "$deb_path" ]; then
-            echo "No .deb file found."
-            exit 1
-          fi
+          #deb_path=$(find . -type f -name 'ai.akemi.appsyncunified*_iphoneos-arm.deb') # | head -n 1)
+          #if [ -z "$deb_path" ]; then
+          #  echo "No .deb file found."
+          #  exit 1
+          #fi
+          #echo "deb_path=$deb_path" >> $GITHUB_ENV
+          find . -type f -name '*.deb'
+          tar cvf appsync-unified-debs.tar ./debs/*
+          deb_path="appsync-unified-debs.tar"
           echo "deb_path=$deb_path" >> $GITHUB_ENV
 
       # Step 8: Upload the generated .deb as an artifact
@@ -75,8 +79,8 @@ jobs:
           name: AppSync-Unified
           path: ${{ env.deb_path }}
 
-      - name: Output artifact URL
-        run: echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
+      #- name: Output artifact URL
+      #  run: echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
 
       # Step 9: Download the uploaded artifact (for demonstration purposes)
       #- name: Download Artifact
