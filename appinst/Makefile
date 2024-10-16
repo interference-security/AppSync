@@ -13,7 +13,7 @@ appinst_CCFLAGS += -std=c++11 -stdlib=libc++ -fobjc-arc -include ./zip.h -I . -f
 appinst_CFLAGS += -fobjc-arc -include ./zip.h -I . -fvisibility=hidden -Wno-unused-property-ivar
 appinst_FRAMEWORKS = Foundation ImageIO CoreGraphics
 appinst_PRIVATE_FRAMEWORKS = MobileCoreServices
-appinst_LDFLAGS += $(THEOS)/lib/libzip.a
+appinst_LDFLAGS += ./libzip.a
 appinst_LIBRARIES = z
 appinst_INSTALL_PATH = /usr/bin
 appinst_CODESIGN_FLAGS = -Sappinst_entitlements.plist
