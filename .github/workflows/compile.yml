@@ -28,7 +28,7 @@ jobs:
       - name: Install Theos at specific commit e045ac7
         run: |
           echo $HOME
-          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          bash -c "$(curl -fsSL https://gist.githubusercontent.com/interference-security/f086374076015b3bec0ac84854f8158a/raw/866d6f56649d82c9deabf58748768dcb1d8d51bb/install-theos-mod.sh)"
           #git clone https://github.com/theos/theos.git $HOME/theos
           cd $HOME/theos
           git checkout e045ac7  # Checkout the specific commit
