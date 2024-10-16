@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14  # Use macOS 14 with Xcode 16
+    runs-on: macos-12  # Use macOS 14 with Xcode 16
 
     steps:
       # Step 1: Checkout the AppSync Unified repository
