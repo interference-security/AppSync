@@ -27,6 +27,7 @@ jobs:
       # Step 3: Install Theos (checkout specific commit e045ac7)
       - name: Install Theos at specific commit e045ac7
         run: |
+          mkdir -p $HOME/theos  # Create the theos directory if it doesn't exist
           echo $HOME
           bash -c "$(curl -fsSL https://gist.githubusercontent.com/interference-security/f086374076015b3bec0ac84854f8158a/raw/866d6f56649d82c9deabf58748768dcb1d8d51bb/install-theos-mod.sh)"
           #git clone https://github.com/theos/theos.git $HOME/theos
