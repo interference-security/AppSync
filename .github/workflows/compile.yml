@@ -1,6 +1,6 @@
 name: Build AppSync Unified
 
-# Trigger the workflow on push or pull request to the main branch
+# Define the events that trigger the workflow
 on:
   push:
     branches:
@@ -8,10 +8,11 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:  # Enables manual triggering
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-14  # Use macOS 14 with Xcode 16
 
     steps:
       # Step 1: Checkout the repository at the specific commit
@@ -21,7 +22,7 @@ jobs:
           # Replace 'e045ac7' with the full commit SHA if necessary
           ref: e045ac7
 
-      # Step 2: Install Homebrew dependencies
+      # Step 2: Install dependencies via Homebrew
       - name: Install dependencies via Homebrew
         run: |
           brew update
@@ -34,14 +35,14 @@ jobs:
         env:
           THEOS: $HOME/theos
 
-      # Step 4: Set up environment variables for Theos
+      # Step 4: Set up Theos environment variables
       - name: Set up Theos environment
         run: |
-          echo "export THEOS=$HOME/theos" >> $GITHUB_ENV
-          echo "export PATH=$PATH:$THEOS/bin" >> $GITHUB_ENV
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          echo "$THEOS/bin" >> $GITHUB_PATH
 
-      # Step 5: Verify Xcode version (optional but recommended)
-      - name: Verify Xcode version
+      # Step 5: Verify Xcode and Swift versions (optional but recommended)
+      - name: Verify Xcode and Swift versions
         run: |
           xcodebuild -version
           swift --version
@@ -51,15 +52,21 @@ jobs:
         run: |
           make package
 
-      # Step 7: Locate the generated package (assuming it's a .deb file)
+      # Step 7: Find the generated .deb files
       - name: Find generated .deb files
         id: find_deb
         run: |
-          echo "::set-output name=path::$(find . -name '*.deb' -print -quit)"
-      
+          deb_path=$(find . -type f -name '*.deb' | head -n 1)
+          if [ -z "$deb_path" ]; then
+            echo "No .deb file found."
+            exit 1
+          fi
+          echo "deb_path=$deb_path" >> $GITHUB_ENV
+
       # Step 8: Upload the generated .deb as an artifact
       - name: Upload Artifact
+        if: env.deb_path != ''
         uses: actions/upload-artifact@v3
         with:
           name: AppSync-Unified
-          path: ${{ steps.find_deb.outputs.path }}
+          path: ${{ env.deb_path }}
