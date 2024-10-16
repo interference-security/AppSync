@@ -31,9 +31,9 @@ jobs:
           echo $HOME
           bash -c "$(curl -fsSL https://gist.githubusercontent.com/interference-security/f086374076015b3bec0ac84854f8158a/raw/866d6f56649d82c9deabf58748768dcb1d8d51bb/install-theos-mod.sh)"
           #git clone https://github.com/theos/theos.git $HOME/theos
-          cd $HOME/theos
-          git checkout e045ac7  # Checkout the specific commit
-          git submodule update --init --recursive
+          git clone https://github.com/theos/theos.git $HOME/theos  # Clone Theos into the directory
+          git -C $HOME/theos checkout e045ac7  # Checkout the specific commit
+          git -C $HOME/theos submodule update --init --recursive
         env:
           THEOS: $HOME/theos
 
