@@ -1,0 +1,65 @@
+name: Build AppSync Unified
+
+# Trigger the workflow on push or pull request to the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+      # Step 1: Checkout the repository at the specific commit
+      - name: Checkout repository at commit e045ac7
+        uses: actions/checkout@v3
+        with:
+          # Replace 'e045ac7' with the full commit SHA if necessary
+          ref: e045ac7
+
+      # Step 2: Install Homebrew dependencies
+      - name: Install dependencies via Homebrew
+        run: |
+          brew update
+          brew install dpkg ldid
+
+      # Step 3: Install Theos using the provided installation script
+      - name: Install Theos
+        run: |
+          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+        env:
+          THEOS: $HOME/theos
+
+      # Step 4: Set up environment variables for Theos
+      - name: Set up Theos environment
+        run: |
+          echo "export THEOS=$HOME/theos" >> $GITHUB_ENV
+          echo "export PATH=$PATH:$THEOS/bin" >> $GITHUB_ENV
+
+      # Step 5: Verify Xcode version (optional but recommended)
+      - name: Verify Xcode version
+        run: |
+          xcodebuild -version
+          swift --version
+
+      # Step 6: Build AppSync Unified
+      - name: Build AppSync Unified
+        run: |
+          make package
+
+      # Step 7: Locate the generated package (assuming it's a .deb file)
+      - name: Find generated .deb files
+        id: find_deb
+        run: |
+          echo "::set-output name=path::$(find . -name '*.deb' -print -quit)"
+      
+      # Step 8: Upload the generated .deb as an artifact
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: AppSync-Unified
+          path: ${{ steps.find_deb.outputs.path }}
