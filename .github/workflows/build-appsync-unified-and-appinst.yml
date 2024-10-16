@@ -1,4 +1,4 @@
-name: Build AppSync Unified
+name: Build AppSync Unified and AppInst
 
 on:
   push:
