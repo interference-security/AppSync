@@ -59,7 +59,7 @@ jobs:
       - name: Find generated .deb files
         id: find_deb
         run: |
-          deb_path=$(find . -type f -name '*.deb' | head -n 1)
+          deb_path=$(find . -type f -name 'ai.akemi.appsyncunified*_iphoneos-arm.deb' | head -n 1)
           if [ -z "$deb_path" ]; then
             echo "No .deb file found."
             exit 1
@@ -72,7 +72,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: AppSync-Unified
-          path: appsync.deb.tar #${{ env.deb_path }}
+          path: ${{ env.deb_path }}
 
       # Step 9: Download the uploaded artifact (for demonstration purposes)
       #- name: Download Artifact
