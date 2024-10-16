@@ -27,9 +27,12 @@ jobs:
       # Step 3: Install Theos (checkout specific commit e045ac7)
       - name: Install Theos at specific commit e045ac7
         run: |
-          git clone https://github.com/theos/theos.git $HOME/theos
+          echo $HOME
+          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          #git clone https://github.com/theos/theos.git $HOME/theos
           cd $HOME/theos
           git checkout e045ac7  # Checkout the specific commit
+          git submodule update --init --recursive
         env:
           THEOS: $HOME/theos
 
