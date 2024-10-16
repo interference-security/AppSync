@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-12  # Use macOS 14 with Xcode 16
+    runs-on: macos-12  # Use macOS 12 with Xcode 14
 
     steps:
       # Step 1: Checkout the AppSync Unified repository
@@ -30,7 +30,6 @@ jobs:
           mkdir -p $HOME/theos  # Create the theos directory if it doesn't exist
           echo $HOME
           bash -c "$(curl -fsSL https://gist.githubusercontent.com/interference-security/f086374076015b3bec0ac84854f8158a/raw/866d6f56649d82c9deabf58748768dcb1d8d51bb/install-theos-mod.sh)"
-          #git clone https://github.com/theos/theos.git $HOME/theos
           git clone https://github.com/theos/theos.git $HOME/theos  # Clone Theos into the directory
           git -C $HOME/theos checkout e045ac7  # Checkout the specific commit
           git -C $HOME/theos submodule update --init --recursive
@@ -55,8 +54,8 @@ jobs:
           make
           make package
 
-      # Step 7: Find the generated .deb files
-      - name: Find generated .deb files
+      # Step 7: Find the generated AppSync Unified *.deb files and TAR them
+      - name: Find generated AppSync Unified *.deb files
         id: find_deb
         run: |
           #deb_path=$(find . -type f -name 'ai.akemi.appsyncunified*_iphoneos-arm.deb') # | head -n 1)
@@ -70,14 +69,47 @@ jobs:
           deb_path="appsync-unified-debs.tar"
           echo "deb_path=$deb_path" >> $GITHUB_ENV
 
-      # Step 8: Upload the generated .deb as an artifact
-      - name: Upload Artifact
+      # Step 8: Upload the generated AppSync Unified *.deb as an artifact
+      - name: Upload AppSync Unified DEB Files Artifact
         if: env.deb_path != ''
         uses: actions/upload-artifact@v4
         id: artifact-upload-step
         with:
           name: AppSync-Unified
           path: ${{ env.deb_path }}
+
+      # Step 9: Build AppInst
+      - name: Build AppInst
+        run: |
+          cd appinst
+          cp libzip.a $THEOS/libs/
+          make
+          make package
+
+      # Step 7: Find the generated AppInst *.deb files and TAR them
+      - name: Find generated AppSync Unified *.deb files
+        id: find_deb_appinst
+        run: |
+          #deb_path=$(find . -type f -name 'ai.akemi.appsyncunified*_iphoneos-arm.deb') # | head -n 1)
+          #if [ -z "$deb_path" ]; then
+          #  echo "No .deb file found."
+          #  exit 1
+          #fi
+          #echo "deb_path=$deb_path" >> $GITHUB_ENV
+          find . -type f -name '*.deb'
+          tar cvf appsync-unified-appinst-debs.tar ./debs/*
+          deb_path_appinst="appsync-unified-appinst-debs.tar"
+          echo "deb_path_appinst=$deb_path_appinst" >> $GITHUB_ENV
+
+      # Step 8: Upload the generated AppInst *.deb as an artifact
+      - name: Upload AppInst DEB Files Artifact
+        if: env.deb_path_appinst != ''
+        uses: actions/upload-artifact@v4
+        id: artifact-upload-step-appinst
+        with:
+          name: AppSync-Unified-Appinst
+          path: ${{ env.deb_path_appinst }}
+
 
       #- name: Output artifact URL
       #  run: echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
