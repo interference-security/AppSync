@@ -72,11 +72,11 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: AppSync-Unified
-          path: ${{ env.deb_path }}
+          path: appsync.deb.tar #${{ env.deb_path }}
 
       # Step 9: Download the uploaded artifact (for demonstration purposes)
-      - name: Download Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: AppSync-Unified
-          path: $HOME/downloads  # Specify a path to download the artifact
+      #- name: Download Artifact
+      #  uses: actions/download-artifact@v3
+      #  with:
+      #    name: AppSync-Unified
+      #    path: $HOME/downloads  # Specify a path to download the artifact
