@@ -1,6 +1,5 @@
 name: Build AppSync Unified
 
-# Define the events that trigger the workflow
 on:
   push:
     branches:
@@ -15,12 +14,9 @@ jobs:
     runs-on: macos-14  # Use macOS 14 with Xcode 16
 
     steps:
-      # Step 1: Checkout the repository at the specific commit
-      - name: Checkout repository at commit e045ac7
+      # Step 1: Checkout the AppSync Unified repository
+      - name: Checkout AppSync Unified repository
         uses: actions/checkout@v3
-        with:
-          # Replace 'e045ac7' with the full commit SHA if necessary
-          ref: e045ac7
 
       # Step 2: Install dependencies via Homebrew
       - name: Install dependencies via Homebrew
@@ -28,10 +24,12 @@ jobs:
           brew update
           brew install dpkg ldid
 
-      # Step 3: Install Theos using the provided installation script
-      - name: Install Theos
+      # Step 3: Install Theos (checkout specific commit e045ac7)
+      - name: Install Theos at specific commit e045ac7
         run: |
-          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          git clone https://github.com/theos/theos.git $HOME/theos
+          cd $HOME/theos
+          git checkout e045ac7  # Checkout the specific commit
         env:
           THEOS: $HOME/theos
 
@@ -41,7 +39,7 @@ jobs:
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           echo "$THEOS/bin" >> $GITHUB_PATH
 
-      # Step 5: Verify Xcode and Swift versions (optional but recommended)
+      # Step 5: Verify Xcode and Swift versions (optional)
       - name: Verify Xcode and Swift versions
         run: |
           xcodebuild -version
