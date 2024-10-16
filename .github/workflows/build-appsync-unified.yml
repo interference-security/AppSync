@@ -66,6 +66,7 @@ jobs:
           #echo "deb_path=$deb_path" >> $GITHUB_ENV
           find . -type f -name '*.deb'
           tar cvf appsync-unified-debs.tar ./debs/*
+          readlink -f appsync-unified-debs.tar
           deb_path="appsync-unified-debs.tar"
           echo "deb_path=$deb_path" >> $GITHUB_ENV
 
@@ -99,6 +100,7 @@ jobs:
           cd appinst
           find . -type f -name '*.deb'
           tar cvf appsync-unified-appinst-debs.tar ./debs/*
+          readlink -f appsync-unified-appinst-debs.tar
           deb_path_appinst="appsync-unified-appinst-debs.tar"
           echo "deb_path_appinst=$deb_path_appinst" >> $GITHUB_ENV
 
